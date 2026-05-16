@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcelin — Sales Daily Templates</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B3F72;
+    --navy-dark: #0f2647;
+    --navy-mid: #1e3a6a;
+    --orange: #FF7A35;
+    --orange-light: #ff9a65;
+    --orange-glow: rgba(255,122,53,0.15);
+    --bg: #080f1a;
+    --surface: #0d1826;
+    --surface2: #111f33;
+    --surface3: #162540;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,122,53,0.3);
+    --text: #e8eef8;
+    --text-muted: #6b82a0;
+    --text-dim: #3d5470;
+    --green: #22d17a;
+    --red: #ff4d6d;
+    --yellow: #f5c842;
+    --purple: #a78bfa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* SIDEBAR NAV */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 28px 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .sidebar-logo .brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--orange);
+    letter-spacing: -0.5px;
+  }
+
+  .sidebar-logo .sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .nav-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0 24px;
+    margin: 16px 0 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-item.active { color: var(--orange); border-left-color: var(--orange); background: var(--orange-glow); }
+  .nav-item .nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 240px;
+    padding: 48px 48px 80px;
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .page-tag::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--orange);
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  .page-title span { color: var(--orange); }
+
+  .page-desc {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  /* SECTION */
+  .section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .section-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--orange-glow);
+    border: 1px solid var(--border-bright);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .section-meta { flex: 1; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.6;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,122,53,0.3), transparent);
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* TEMPLATE BLOCK */
+  .template-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 20px 16px;
+    position: relative;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: #94b4d4;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .template-block .highlight { color: var(--orange); }
+  .template-block .bracket { color: var(--text-muted); }
+  .template-block .key { color: var(--green); }
+  .template-block .section-divider { color: var(--text-dim); }
+
+  .copy-btn {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .copy-btn:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+  .copy-btn.copied { background: var(--green); color: #fff; border-color: var(--green); }
+
+  /* DECISION TABLE */
+  .decision-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .decision-table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .decision-table td {
+    font-size: 13px;
+    color: var(--text);
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .decision-table tr:last-child td { border-bottom: none; }
+  .decision-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-green { background: rgba(34,209,122,0.1); color: var(--green); border: 1px solid rgba(34,209,122,0.2); }
+  .badge-orange { background: rgba(255,122,53,0.1); color: var(--orange); border: 1px solid rgba(255,122,53,0.2); }
+  .badge-red { background: rgba(255,77,109,0.1); color: var(--red); border: 1px solid rgba(255,77,109,0.2); }
+  .badge-purple { background: rgba(167,139,250,0.1); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+  .badge-blue { background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+    margin-top: 8px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--orange), var(--navy), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--orange);
+  }
+
+  .timeline-time {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--orange);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .timeline-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* CHECKLIST */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    user-select: none;
+  }
+
+  .check-item:hover { border-color: var(--border-bright); }
+  .check-item.checked { border-color: rgba(34,209,122,0.3); background: rgba(34,209,122,0.03); }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid var(--text-dim);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+    font-size: 11px;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .check-group-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 16px 0 6px;
+  }
+
+  /* DO/DONT */
+  .do-dont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 8px;
+  }
+
+  .do-col, .dont-col {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .do-col { border-top: 2px solid var(--green); }
+  .dont-col { border-top: 2px solid var(--red); }
+
+  .do-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .do-header.do { color: var(--green); }
+  .do-header.dont { color: var(--red); }
+
+  .do-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+
+  .do-item::before {
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 11px;
+  }
+
+  .do-col .do-item::before { content: '✓'; color: var(--green); }
+  .dont-col .do-item::before { content: '✕'; color: var(--red); }
+
+  /* PROGRESS */
+  .progress-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--orange);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* FUNNEL VIZ */
+  .funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 16px 0;
+  }
+
+  .funnel-stage {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    position: relative;
+  }
+
+  .funnel-stage:first-child { border-radius: 12px 12px 0 0; }
+  .funnel-stage:last-child { border-radius: 0 0 12px 12px; }
+  .funnel-stage + .funnel-stage { border-top: none; }
+
+  .funnel-stage.highlight-stage {
+    background: rgba(255,122,53,0.08);
+    border-color: rgba(255,122,53,0.25);
+  }
+
+  .funnel-arrow {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 11px;
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .funnel-arrow::before, .funnel-arrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .funnel-stage-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .funnel-stage-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  .funnel-stage-count {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: right;
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  /* WEEKLY TABLE */
+  .weekly-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .weekly-table th {
+    background: var(--surface3);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 11px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  .weekly-table td {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    vertical-align: middle;
+    line-height: 1.5;
+  }
+
+  .weekly-table td.metric { color: var(--text-muted); font-size: 12.5px; }
+  .weekly-table td.target { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--orange); }
+  .weekly-table td input[type="text"] {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    width: 100%;
+    outline: none;
+  }
+
+  .traffic-light {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .tl { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
+  .tl:hover { transform: scale(1.2); }
+  .tl-r { background: var(--red); opacity: 0.4; }
+  .tl-y { background: var(--yellow); opacity: 0.4; }
+  .tl-g { background: var(--green); opacity: 0.4; }
+  .tl-r.on, .tl-y.on, .tl-g.on { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px; }
+    .do-dont { grid-template-columns: 1fr; }
+    .progress-header { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 99px; }
+
+  /* MOBILE NAV */
+  .mobile-nav {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    overflow-x: auto;
+    gap: 8px;
+  }
+
+  @media (max-width: 900px) {
+    .mobile-nav { display: flex; }
+  }
+
+  .mobile-nav-btn {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .mobile-nav-btn.active {
+    background: var(--orange);
+    color: #fff;
+    border-color: var(--orange);
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">PARCELIN</div>
+    <div class="sub">Sales Templates 2026</div>
+  </div>
+  
+  <div class="nav-group-label">Overview</div>
+  <a class="nav-item active" onclick="showSection('funnel')">
+    <span class="nav-icon">🗺️</span> Funnel & WIG
+  </a>
+
+  <div class="nav-group-label">Daily Templates</div>
+  <a class="nav-item" onclick="showSection('morning')">
+    <span class="nav-icon">🌅</span> Morning Check-in
+  </a>
+  <a class="nav-item" onclick="showSection('sore')">
+    <span class="nav-icon">🌆</span> Sore Update
+  </a>
+
+  <div class="nav-group-label">Sales Flow</div>
+  <a class="nav-item" onclick="showSection('filter')">
+    <span class="nav-icon">⚡</span> Quick Budget Filter
+  </a>
+  <a class="nav-item" onclick="showSection('discovery')">
+    <span class="nav-icon">🔍</span> Discovery Meeting
+  </a>
+  <a class="nav-item" onclick="showSection('quotation')">
+    <span class="nav-icon">📋</span> Quotation Meeting
+  </a>
+  <a class="nav-item" onclick="showSection('followup')">
+    <span class="nav-icon">📲</span> Follow-up Sequence
+  </a>
+
+  <div class="nav-group-label">Accountability</div>
+  <a class="nav-item" onclick="showSection('weekly')">
+    <span class="nav-icon">📊</span> Weekly WIG Session
+  </a>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <button class="mobile-nav-btn active" onclick="showSection('funnel')">🗺️ Funnel</button>
+  <button class="mobile-nav-btn" onclick="showSection('morning')">🌅 Morning</button>
+  <button class="mobile-nav-btn" onclick="showSection('sore')">🌆 Sore</button>
+  <button class="mobile-nav-btn" onclick="showSection('filter')">⚡ Filter</button>
+  <button class="mobile-nav-btn" onclick="showSection('discovery')">🔍 Discovery</button>
+  <button class="mobile-nav-btn" onclick="showSection('quotation')">📋 Quotation</button>
+  <button class="mobile-nav-btn" onclick="showSection('followup')">📲 Follow-up</button>
+  <button class="mobile-nav-btn" onclick="showSection('weekly')">📊 Weekly</button>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-tag">4DX Framework</div>
+    <h1 class="page-title">Sales <span>Playbook</span></h1>
+    <p class="page-desc">Template harian, skrip percakapan, dan sistem akuntabilitas untuk tim sales Parcelin. Klik menu untuk navigasi antar template.</p>
+  </div>
+
+  <!-- ===== FUNNEL ===== -->
+  <section class="section active" id="section-funnel">
+    <div class="section-header">
+      <div class="section-icon">🗺️</div>
+      <div class="section-meta">
+        <div class="section-title">Funnel & WIG Overview</div>
+        <div class="section-subtitle">Peta perjalanan leads dari masuk sampai closing, beserta target yang harus dicapai.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Wildly Important Goal</div>
+      <div style="background:var(--bg);border-radius:10px;padding:20px;border:1px solid rgba(255,122,53,0.2);">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;color:var(--orange);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">WIG Utama</div>
+        <div style="font-size:17px;font-weight:600;color:var(--text);line-height:1.5;">Dari rata-rata Rp 157 jt/bulan (Q1 2026) → <span style="color:var(--orange)">Rp 500 juta/bulan</span> secara konsisten mulai Juli 2026</div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <div style="font-family:'Syne',sans-serif;font-size:12px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Bridge Goal Mei 2026</div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);">Dari Rp 46 jt (16 Mei) → <span style="color:var(--green)">Rp 300 jt</span> pada 31 Mei 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Sales Funnel</div>
+      <div class="funnel">
+        <div class="funnel-stage">
+          <div class="funnel-stage-name">LEADS</div>
+          <div class="funnel-stage-desc">Masuk dari ads CTWA. Belum divalidasi sama sekali.</div>
+          <div class="funnel-stage-count" style="color:var(--text-muted);">30–40<span style="font-size:11px;display:block;font-weight:400;color:var(--text-dim)">per hari</span></div>
+        </div>
+        <div class="funnel-arrow">⚡ Quick Budget Filter — maks. 15 menit response</div>
+        <div class="funnel-stage">
+          <div class="funnel-stage-name">BUDGET-QUALIFIED</div>
+          <div class="funnel-stage-desc">Budget sudah aman. Lanjut ke Discovery untuk gali kebutuhan lebih dalam.</div>
+          <div class="funnel-stage-count" style="color:var(--yellow);">~30%<span style="font-size:11px;display:block;font-weight:400;color:var(--text-dim)">dari leads</span></div>
+        </div>
+        <div class="funnel-arrow">🔍 Discovery Meeting — 2–3 per sales per hari</div>
+        <div class="funnel-stage">
+          <div class="funnel-stage-name">MQL</div>
+          <div class="funnel-stage-desc">Lolos 5 qualifying point. Layak dibuatkan penawaran formal.</div>
+          <div class="funnel-stage-count" style="color:var(--orange);">10–15%<span style="font-size:11px;display:block;font-weight:400;color:var(--text-dim)">dari leads</span></div>
+        </div>
+        <div class="funnel-arrow">📋 Quotation Meeting — 3–4 per sales per hari</div>
+        <div class="funnel-stage highlight-stage">
+          <div class="funnel-stage-name">SQL</div>
+          <div class="funnel-stage-desc">Ada respons konkret + next step disepakati setelah terima quotation.</div>
+          <div class="funnel-stage-count" style="color:var(--orange);">40–50%<span style="font-size:11px;display:block;font-weight:400;color:var(--text-dim)">dari MQL</span></div>
+        </div>
+        <div class="funnel-arrow">💰 Closing Attempt — min. 2 per sales per hari</div>
+        <div class="funnel-stage" style="border-color:rgba(34,209,122,0.2);background:rgba(34,209,122,0.04);">
+          <div class="funnel-stage-name" style="color:var(--green);">CLOSING</div>
+          <div class="funnel-stage-desc">DP atau PO masuk. Janji bayar tanpa tanggal konkret belum dihitung.</div>
+          <div class="funnel-stage-count" style="color:var(--green);">40–50%<span style="font-size:11px;display:block;font-weight:400;color:var(--text-dim)">dari SQL</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Lead Measures — Target Harian per Sales</div>
+      <table class="decision-table">
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th>Activity</th>
+            <th>Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">Filter</span></td>
+            <td>Quick budget filter dari leads masuk</td>
+            <td><span style="color:var(--orange);font-weight:600;">Semua leads hari itu</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-blue">Filter</span></td>
+            <td>Response time ke leads baru</td>
+            <td><span style="color:var(--orange);font-weight:600;">Maks. 15 menit</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-purple">Discovery</span></td>
+            <td>Discovery meeting selesai</td>
+            <td><span style="color:var(--orange);font-weight:600;">2–3 per hari</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-purple">Discovery</span></td>
+            <td>Discovery-to-MQL rate</td>
+            <td><span style="color:var(--orange);font-weight:600;">Min. 70%</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">Quotation</span></td>
+            <td>Quotation meeting selesai (standar penuh)</td>
+            <td><span style="color:var(--orange);font-weight:600;">3–4 per hari</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">Quotation</span></td>
+            <td>Time-to-quotation dari MQL dinyatakan</td>
+            <td><span style="color:var(--orange);font-weight:600;">Maks. 1 hari kerja</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">Quotation</span></td>
+            <td>Follow-up post-quotation dalam 24 jam</td>
+            <td><span style="color:var(--orange);font-weight:600;">100% — non-negotiable</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Closing</span></td>
+            <td>Attempt closing aktif pada SQL</td>
+            <td><span style="color:var(--orange);font-weight:600;">Min. 2 per hari</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Existing</span></td>
+            <td>RO outreach ke existing customer</td>
+            <td><span style="color:var(--orange);font-weight:600;">Min. 3 per hari</span></td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Existing</span></td>
+            <td>Kejar invoice outstanding</td>
+            <td><span style="color:var(--orange);font-weight:600;">Min. 5 per hari</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== MORNING ===== -->
+  <section class="section" id="section-morning">
+    <div class="section-header">
+      <div class="section-icon">🌅</div>
+      <div class="section-meta">
+        <div class="section-title">Morning Check-in</div>
+        <div class="section-subtitle">Dikirim ke grup / manajer setiap 08.30. Accountability check — bukan briefing biasa.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Template — Kirim via WA</div>
+      <div class="template-block" id="morning-template">
+<span class="highlight">MORNING CHECK-IN</span> — <span class="bracket">[Nama]</span> — <span class="bracket">[Tanggal]</span>
+<span class="section-divider">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="key">KEMARIN:</span>
+□ Discovery selesai      : <span class="bracket">[angka]</span>
+□ Quotation terkirim     : <span class="bracket">[angka]</span> — ke <span class="bracket">[nama prospek]</span>
+□ Follow-up post-quote   : <span class="bracket">[✅ done / ❌ miss — alasan]</span>
+□ Attempt closing        : <span class="bracket">[nama prospek]</span>
+□ RO outreach            : <span class="bracket">[angka]</span>
+□ Invoice ditagih        : <span class="bracket">[angka]</span>
+□ Omzet masuk            : Rp <span class="bracket">[angka]</span>
+
+<span class="key">HARI INI AKAN:</span>
+→ Discovery dengan       : <span class="bracket">[nama / "leads baru masuk"]</span>
+→ Quotation ke           : <span class="bracket">[nama]</span>
+→ Follow-up prioritas    : <span class="bracket">[nama + statusnya sekarang]</span>
+→ Attempt closing ke     : <span class="bracket">[nama + alasan kenapa hari ini]</span>
+
+<span class="key">HAMBATAN:</span>
+→ <span class="bracket">[Kosong = tidak ada. Kalau ada, wajib tulis solusi yang sudah dicoba]</span>
+      <button class="copy-btn" onclick="copyTemplate('morning-template', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Aturan untuk Manajer</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Baca dan catat semua angka ke scoreboard harian</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Hanya respon kalau ada hambatan yang butuh keputusan dari manajer</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Jangan komentari hal yang bisa diselesaikan sales sendiri</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Kalau sales tidak kirim check-in → tanyakan, bukan didiamkan</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SORE ===== -->
+  <section class="section" id="section-sore">
+    <div class="section-header">
+      <div class="section-icon">🌆</div>
+      <div class="section-meta">
+        <div class="section-title">Sore Async Update</div>
+        <div class="section-subtitle">Dikirim via WA setiap 17.00. Tidak perlu meeting — cukup kirim format ini.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Template — Kirim via WA</div>
+      <div class="template-block" id="sore-template">
+<span class="highlight">SORE UPDATE</span> — <span class="bracket">[Nama]</span> — <span class="bracket">[Tanggal]</span>
+<span class="section-divider">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="key">AKTUAL HARI INI:</span>
+□ Leads difilter (budget)   : <span class="bracket">[angka]</span>
+□ Budget-qualified          : <span class="bracket">[angka]</span> (<span class="bracket">[%]</span>%)
+□ Discovery selesai         : <span class="bracket">[angka]</span>
+□ MQL baru                  : <span class="bracket">[angka]</span> — <span class="bracket">[nama kalau ada]</span>
+□ Quotation terkirim        : <span class="bracket">[angka]</span> — ke <span class="bracket">[nama]</span>
+□ Follow-up post-quote done : <span class="bracket">[✅ / ❌]</span>
+□ Attempt closing           : <span class="bracket">[nama + responsnya]</span>
+□ RO outreach               : <span class="bracket">[angka]</span>
+□ Invoice ditagih           : <span class="bracket">[angka]</span>
+□ Omzet masuk hari ini      : Rp <span class="bracket">[angka]</span>
+□ Total omzet bulan ini     : Rp <span class="bracket">[angka]</span>
+
+<span class="key">PIPELINE UPDATE:</span>
+→ <span class="bracket">[Nama]</span> : <span class="bracket">[status lama]</span> → <span class="bracket">[status baru]</span>
+→ <span class="bracket">[Nama]</span> : <span class="bracket">[status lama]</span> → <span class="bracket">[status baru]</span>
+
+<span class="key">BESOK PRIORITAS:</span>
+→ <span class="bracket">[1–2 hal paling penting besok]</span>
+      <button class="copy-btn" onclick="copyTemplate('sore-template', this)">📋 Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FILTER ===== -->
+  <section class="section" id="section-filter">
+    <div class="section-header">
+      <div class="section-icon">⚡</div>
+      <div class="section-meta">
+        <div class="section-title">Quick Budget Filter</div>
+        <div class="section-subtitle">Gate pertama setelah leads masuk. Tujuan satu: tahu budget secepat mungkin. Maks. 3–5 menit.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Opening — Kirim maks. 15 menit setelah leads masuk</div>
+      <div class="template-block" id="filter-opening">
+Halo <span class="bracket">[Nama]</span>, terima kasih sudah menghubungi Parcelin! 🙏
+
+Saya <span class="bracket">[Nama Sales]</span> yang akan bantu dari sini.
+
+Boleh saya tanya dulu — untuk kebutuhan 
+packaging-nya, kira-kira budget yang disiapkan 
+per pcs-nya di range berapa ya? 
+
+Supaya saya bisa langsung arahkan ke spesifikasi 
+yang paling pas buat Bapak/Ibu. 😊
+      <button class="copy-btn" onclick="copyTemplate('filter-opening', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Kalau Leads Tidak Langsung Jawab Budget</div>
+      <div class="template-block" id="filter-anchor">
+Untuk hardbox custom di Parcelin, range harga kami 
+mulai dari Rp <span class="bracket">[X]</span> per pcs tergantung spesifikasi 
+dan quantity-nya.
+
+Kira-kira masih relevan dengan yang Bapak/Ibu 
+rencanakan?
+      <button class="copy-btn" onclick="copyTemplate('filter-anchor', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Decision Tree Setelah Dapat Jawaban Budget</div>
+      <table class="decision-table">
+        <thead>
+          <tr>
+            <th>Kondisi Budget</th>
+            <th>Tindakan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-green">Relevan</span> — sesuai range hardbox Parcelin</td>
+            <td>Lanjut ke Discovery Meeting. Jadwalkan atau lanjutkan di chat.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">Borderline</span> — sedikit di bawah tapi bisa dinegosiasi</td>
+            <td>Edukasi singkat tentang value Parcelin. Tawarkan spesifikasi alternatif yang lebih ekonomis.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">Tidak Match</span> — jelas tidak sesuai</td>
+            <td>Acknowledge sopan, keluar dari pipeline aktif. Jangan dipaksakan.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Script Kalau Budget Tidak Match</div>
+      <div class="template-block" id="filter-nomatch">
+Terima kasih sudah sharing, <span class="bracket">[Nama]</span>. 
+
+Untuk range budget tersebut, spesifikasi yang 
+Bapak/Ibu inginkan kemungkinan belum bisa kami 
+akomodasi dengan optimal saat ini.
+
+Kalau suatu saat budget-nya memungkinkan atau 
+ada kebutuhan lain, jangan ragu hubungi kami 
+kembali ya. 🙏
+      <button class="copy-btn" onclick="copyTemplate('filter-nomatch', this)">📋 Copy</button>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid rgba(255,77,109,0.2);font-size:12.5px;color:var(--text-muted);line-height:1.7;">
+        ⚠️ <strong style="color:var(--red);">Stop di sini.</strong> Jangan dipanjangkan. Jangan coba convince. Waktu sales terlalu mahal untuk leads yang tidak qualified.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DISCOVERY ===== -->
+  <section class="section" id="section-discovery">
+    <div class="section-header">
+      <div class="section-icon">🔍</div>
+      <div class="section-meta">
+        <div class="section-title">Discovery Meeting</div>
+        <div class="section-subtitle">Dipakai setelah leads lolos budget filter. Via chat atau voice call — maks. 15 menit. Target: 2–3 per sales per hari.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Opening Discovery</div>
+      <div class="template-block" id="discovery-opening">
+Oke <span class="bracket">[Nama]</span>, budgetnya sudah cocok. 
+
+Supaya saya bisa buatkan penawaran yang tepat, 
+boleh saya tanya beberapa hal dulu? 
+Tidak lama, sekitar 10–15 menit.
+      <button class="copy-btn" onclick="copyTemplate('discovery-opening', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">5 Qualifying Questions — Urutan Penting</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-time">Q1 — Product Fit</div>
+          <div class="timeline-title">"Kemasannya yang dimaksud rigid box / hardbox ya? Bukan softbox atau corrugated?"</div>
+          <div class="timeline-desc">🚩 Red flag: Tidak tahu bedanya, atau mau produk yang bukan hardbox → luruskan dulu sebelum lanjut.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Q2 — MOQ Fit</div>
+          <div class="timeline-title">"Untuk kebutuhan pertamanya kira-kira berapa pcs dulu?"</div>
+          <div class="timeline-desc">🚩 Red flag: Di bawah MOQ → jelaskan MOQ dengan sopan, tanya apakah bisa adjust quantity.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Q3 — Spesifikasi</div>
+          <div class="timeline-title">"Ukurannya sudah ada gambaran? Finishing-nya mau yang seperti apa — laminasi doff, glossy, atau ada referensi?"</div>
+          <div class="timeline-desc">💡 Kalau belum ada: minta kirim referensi via WA sebelum quotation dibuat.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Q4 — Decision Maker</div>
+          <div class="timeline-title">"Kalau penawaran sudah kami siapkan, keputusannya langsung dari Bapak/Ibu atau perlu approval dulu?"</div>
+          <div class="timeline-desc">🚩 Red flag: "Nanti tanya bos dulu" tanpa ada komitmen follow-up → tanya siapa dan bisa di-involve dari awal.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Q5 — Timeline</div>
+          <div class="timeline-title">"Targetnya packaging ini sudah harus jadi kapan? Ada event atau launching tertentu?"</div>
+          <div class="timeline-desc">💡 Kalau tidak ada timeline: ciptakan urgency dari sisi produksi — "Produksi kami butuh [X] minggu, jadi kalau mau aman sebaiknya kita mulai proses [tanggal]."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Closing Discovery</div>
+      <div class="template-block" id="discovery-closing">
+Oke <span class="bracket">[Nama]</span>, sudah cukup clear. 
+
+Saya akan siapkan penawaran detailnya dan 
+kirimkan paling lambat besok ya.
+
+Nanti setelah Bapak/Ibu terima, kita bisa 
+diskusi lagi kalau ada yang ingin disesuaikan.
+
+Nomor WA ini aktif kan untuk saya follow up?
+      <button class="copy-btn" onclick="copyTemplate('discovery-closing', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Checklist MQL — Catat di Pipeline Setelah Discovery</div>
+      <div class="check-group-label">Semua harus ✅ untuk dinyatakan MQL</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Produk yang dibutuhkan adalah hardbox / rigid box</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Quantity sesuai MOQ</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Budget tidak terlalu jauh dari harga Parcelin</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Berbicara dengan atau bisa menjangkau decision maker</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Ada urgency atau timeline yang konkret</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid rgba(255,77,109,0.15);font-size:12.5px;color:var(--text-muted);line-height:1.7;">
+        ❌ Tidak lolos salah satu → <strong style="color:var(--red);">bukan MQL.</strong> Masuk nurturing list. Tidak boleh memakan waktu sales aktif.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== QUOTATION ===== -->
+  <section class="section" id="section-quotation">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div class="section-meta">
+        <div class="section-title">Quotation Meeting</div>
+        <div class="section-subtitle">Fokus utama — diperbanyak 3–4 per sales per hari. Mengirim penawaran ≠ Quotation Meeting.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Pre-Send Checklist — Wajib Sebelum Kirim</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div><strong>Spesifikasi terkonfirmasi</strong> — ukuran, material, finishing, quantity, timeline produksi sudah clear</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div><strong>Hook value ada di dokumen</strong> — satu kalimat yang mengingatkan kenapa Parcelin (track record, brand yang pernah dilayani)</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div><strong>CTA jelas di dokumen</strong> — masa berlaku penawaran atau langkah selanjutnya yang konkret</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Pesan Pengantar Saat Kirim Quotation</div>
+      <div class="template-block" id="quote-send">
+Halo <span class="bracket">[Nama]</span>! 
+
+Ini saya kirimkan penawaran untuk 
+<span class="bracket">[spesifikasi singkat — misal: "rigid box 20x15x8cm, 
+laminasi doff, qty 500 pcs"]</span> 
+sesuai diskusi kita.
+
+Total estimasinya di Rp <span class="bracket">[angka]</span> untuk <span class="bracket">[qty]</span> pcs, 
+sudah termasuk <span class="bracket">[apa yang included — misal: 
+desain dieline, sampel, ongkir]</span>.
+
+Detail lengkapnya ada di file terlampir.
+
+Satu hal yang ingin saya pastikan — 
+timeline Bapak/Ibu untuk <span class="bracket">[event/kebutuhan 
+yang disebut saat Discovery]</span> masih 
+<span class="bracket">[tanggal yang disebut]</span> kan?
+
+Karena kalau iya, proses sampel perlu kita 
+mulai paling lambat <span class="bracket">[tanggal konkret]</span>, 
+supaya produksi bisa on schedule. 😊
+
+Ada pertanyaan setelah lihat penawaran ini?
+      <button class="copy-btn" onclick="copyTemplate('quote-send', this)">📋 Copy</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+        <div style="padding:12px;background:var(--bg);border:1px solid rgba(34,209,122,0.2);border-radius:8px;font-size:12px;color:var(--text-muted);line-height:1.7;">
+          ✅ <strong style="color:var(--green);">Yang harus ada:</strong><br>
+          Spesifikasi spesifik disebut<br>
+          Angka harga disebut di pesan<br>
+          Timeline prospek dipakai untuk urgency<br>
+          Pertanyaan terbuka di akhir
+        </div>
+        <div style="padding:12px;background:var(--bg);border:1px solid rgba(255,77,109,0.2);border-radius:8px;font-size:12px;color:var(--text-muted);line-height:1.7;">
+          ❌ <strong style="color:var(--red);">Jangan:</strong><br>
+          "Ini penawaran nya" (tanpa konteks)<br>
+          Kirim PDF tanpa pesan pengantar<br>
+          Tidak menyebut angka<br>
+          Tidak ada pertanyaan / CTA
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Checklist SQL — Setelah Quotation Meeting</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Quotation sudah diterima dan dikonfirmasi diterima oleh prospek</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Ada respons konkret: feedback harga, minta revisi, atau setuju lanjut ke sampel</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Ada next step yang disepakati dengan timeline konkret</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOLLOWUP ===== -->
+  <section class="section" id="section-followup">
+    <div class="section-header">
+      <div class="section-icon">📲</div>
+      <div class="section-meta">
+        <div class="section-title">Follow-up Sequence</div>
+        <div class="section-subtitle">Setiap quotation wajib di-follow up. Tidak ada yang boleh dibiarkan menggantung lebih dari 7 hari.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Timeline Follow-up</div>
+      <table class="decision-table">
+        <thead>
+          <tr><th>Waktu</th><th>Tujuan</th><th>Tindakan kalau tidak respons</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-orange">H+1 (24 jam)</span></td>
+            <td>Konfirmasi terima dan baca</td>
+            <td>Coba ganti channel (WA → telepon)</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">H+3</span></td>
+            <td>Gali hambatan tersembunyi</td>
+            <td>Tanya langsung via telepon singkat</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">H+5</span></td>
+            <td>Attempt closing — minta keputusan</td>
+            <td>Last push, tawarkan solusi atas hambatan</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">H+7</span></td>
+            <td>Last touch sebelum cold</td>
+            <td>Pindah ke cold list. Stop follow-up aktif.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label">H+1 — Konfirmasi Terima</div>
+      <div class="template-block" id="fu-h1">
+Halo <span class="bracket">[Nama]</span>, selamat <span class="bracket">[pagi/siang/sore]</span> 🙏
+
+Mau memastikan penawaran yang saya kirim 
+kemarin sudah diterima dengan baik.
+
+Ada bagian yang ingin didiskusikan 
+atau disesuaikan?
+      <button class="copy-btn" onclick="copyTemplate('fu-h1', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">H+3 — Gali Hambatan</div>
+      <div class="template-block" id="fu-h3">
+Halo <span class="bracket">[Nama]</span>, saya follow up lagi 
+terkait penawaran yang sudah saya kirimkan.
+
+Apakah ada pertanyaan tentang spesifikasi 
+atau harganya?
+
+Atau mungkin ada hal yang perlu kita diskusikan 
+dulu sebelum Bapak/Ibu bisa memutuskan?
+
+Saya siap bantu klarifikasi kapanpun. 😊
+      <button class="copy-btn" onclick="copyTemplate('fu-h3', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">H+5 — Attempt Closing</div>
+      <div class="template-block" id="fu-h5">
+Halo <span class="bracket">[Nama]</span>, ini saya <span class="bracket">[Nama Sales]</span> 
+dari Parcelin.
+
+Penawaran yang saya kirim sudah beberapa hari, 
+dan saya ingin memastikan Bapak/Ibu sudah punya 
+gambaran yang cukup untuk memutuskan.
+
+Kalau ada yang masih mengganjal — soal harga, 
+spesifikasi, atau timeline — kita bisa diskusi 
+sekarang dan saya akan bantu carikan solusinya.
+
+Apakah kita bisa tentukan next step-nya 
+hari ini? Misalnya mulai proses sampel, 
+atau konfirmasi spesifikasi final? 🙏
+      <button class="copy-btn" onclick="copyTemplate('fu-h5', this)">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">H+7 — Last Touch Sebelum Cold</div>
+      <div class="template-block" id="fu-h7">
+Halo <span class="bracket">[Nama]</span>, saya tidak ingin 
+terlalu sering mengganggu, tapi saya ingin 
+memastikan satu hal terakhir.
+
+Apakah kebutuhan packaging-nya masih 
+relevan untuk saat ini?
+
+Kalau memang timing-nya belum tepat, 
+tidak masalah sama sekali — saya bisa 
+follow up kembali di waktu yang lebih sesuai.
+
+Tapi kalau Bapak/Ibu memang tertarik untuk 
+lanjut, saya tunggu kabarnya ya supaya 
+kita bisa segera proses. 🙏
+      <button class="copy-btn" onclick="copyTemplate('fu-h7', this)">📋 Copy</button>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid rgba(255,77,109,0.15);font-size:12.5px;color:var(--text-muted);line-height:1.7;">
+        Setelah H+7 tidak ada respons → <strong style="color:var(--red);">pindah ke cold list.</strong> Tidak perlu follow-up lagi kecuali ada trigger baru dari prospek.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Do vs Don't — Follow-up Language</div>
+      <div class="do-dont">
+        <div class="do-col">
+          <div class="do-header do">✓ Boleh</div>
+          <div class="do-item">"Ada pertanyaan tentang penawaran ini?"</div>
+          <div class="do-item">"Apakah spesifikasinya sudah sesuai?"</div>
+          <div class="do-item">"Timeline-nya masih minggu depan kan? Kita perlu konfirmasi sekarang."</div>
+          <div class="do-item">Tawarkan solusi atas kemungkinan keberatan</div>
+          <div class="do-item">Minta next step konkret</div>
+        </div>
+        <div class="dont-col">
+          <div class="do-header dont">✕ Tidak Boleh</div>
+          <div class="do-item">"Gimana pak, sudah dilihat?"</div>
+          <div class="do-item">"Jadi jadi tidak pak?"</div>
+          <div class="do-item">"Maaf ganggu ya pak..."</div>
+          <div class="do-item">Nunggu tanpa inisiatif setelah quotation terkirim</div>
+          <div class="do-item">Follow-up tanpa tujuan yang jelas</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WEEKLY ===== -->
+  <section class="section" id="section-weekly">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <div class="section-meta">
+        <div class="section-title">Weekly WIG Session</div>
+        <div class="section-subtitle">Setiap Senin 08.00 — 30 menit. Agenda tetap, tidak boleh berubah. Mulai selalu dari scoreboard.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Scoreboard Mingguan — Isi Saat Session</div>
+      <table class="weekly-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Aktual Minggu Ini</th>
+            <th>Target</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric">Total Omzet</td>
+            <td><input type="text" placeholder="Rp ___"></td>
+            <td class="target">Rp 125 jt/minggu</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+          <tr>
+            <td class="metric">Total MQL Baru</td>
+            <td><input type="text" placeholder="___"></td>
+            <td class="target">Min. 25</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+          <tr>
+            <td class="metric">MQL Rate</td>
+            <td><input type="text" placeholder="__%"></td>
+            <td class="target">Min. 10%</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+          <tr>
+            <td class="metric">Quotation Terkirim</td>
+            <td><input type="text" placeholder="___"></td>
+            <td class="target">Min. 20</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+          <tr>
+            <td class="metric">Quotation Response Rate</td>
+            <td><input type="text" placeholder="__%"></td>
+            <td class="target">Min. 60%</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+          <tr>
+            <td class="metric">Total SQL Baru</td>
+            <td><input type="text" placeholder="___"></td>
+            <td class="target">Min. 10</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+          <tr>
+            <td class="metric">Total Closing</td>
+            <td><input type="text" placeholder="___"></td>
+            <td class="target">Min. 8–9</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+          <tr>
+            <td class="metric">AOV Closing Minggu Ini</td>
+            <td><input type="text" placeholder="Rp ___"></td>
+            <td class="target">Min. Rp 14 jt</td>
+            <td><div class="traffic-light" onclick="cycleTL(this)"><div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Agenda Session — 30 Menit</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-time">Menit 0–5</div>
+          <div class="timeline-title">Buka scoreboard bersama</div>
+          <div class="timeline-desc">Review angka lag measure minggu lalu vs target. Tidak ada opening basa-basi — langsung ke angka.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Menit 5–15</div>
+          <div class="timeline-title">Review lead measures</div>
+          <div class="timeline-desc">Mana yang konsisten hijau? Mana yang merah? Apa penyebab yang sudah diidentifikasi? Solusi apa yang sudah dicoba?</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Menit 15–25</div>
+          <div class="timeline-title">Komitmen minggu ini</div>
+          <div class="timeline-desc">Tiap sales komit 2–3 tindakan spesifik. Ada nama, ada angka, ada tanggal. Bukan "akan lebih rajin" — tapi "Selasa saya akan closing attempt ke Torrenda dan NAMA Parfume."</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Menit 25–30</div>
+          <div class="timeline-title">Hambatan sistem untuk manajer</div>
+          <div class="timeline-desc">Identifikasi 1 hambatan yang bukan ranah sales — perlu keputusan atau tindakan dari manajer. Catat dengan deadline keputusan.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Aturan Session — Non-Negotiable</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Selalu mulai dengan scoreboard, bukan cerita atau update naratif</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Masalah tanpa solusi yang sudah dicoba tidak diterima</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Komitmen harus konkret — ada nama prospek, ada tanggal, ada tindakan spesifik</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Manajer bukan hakim — tapi semua orang bertanggung jawab atas skornya sendiri</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div>Selesai tepat 30 menit — hal yang butuh diskusi panjang dijadwalkan terpisah</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function showSection(id) {
+    // Hide all
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+
+    // Show target
+    const sec = document.getElementById('section-' + id);
+    if (sec) sec.classList.add('active');
+
+    // Highlight nav
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) {
+        n.classList.add('active');
+      }
+    });
+    document.querySelectorAll('.mobile-nav-btn').forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) {
+        b.classList.add('active');
+      }
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    const box = el.querySelector('.check-box');
+    box.textContent = el.classList.contains('checked') ? '✓' : '';
+  }
+
+  function copyTemplate(id, btn) {
+    const el = document.getElementById(id);
+    const text = el.innerText.replace(/📋 Copy/g, '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.textContent = '📋 Copy';
+      }, 2000);
+    });
+  }
+
+  function cycleTL(container) {
+    const lights = container.querySelectorAll('.tl');
+    const current = Array.from(lights).findIndex(l => l.classList.contains('on'));
+    lights.forEach(l => l.classList.remove('on'));
+    const next = (current + 1) % lights.length;
+    lights[next].classList.add('on');
+  }
+</script>
+
+</body>
+</html>
