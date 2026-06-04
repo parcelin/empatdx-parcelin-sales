@@ -669,7 +669,7 @@ body {
 <!-- ── LEAD MEASURE GAUGES ── -->
 <div class="section-card">
   <div class="section-head">
-    <div class="section-title">📊 Lead Measures — Harian</div>
+    <div class="section-title">📊 Lead Measures</div>
     <div class="section-info">Target = per CS × 2 (total 2 CS)</div>
   </div>
   <div class="gauges-grid" id="gaugesGrid">
@@ -680,7 +680,7 @@ body {
 <!-- ── INPUT PANEL ── -->
 <div class="input-panel">
   <div class="section-head">
-    <div class="section-title">📥 Input Data Harian</div>
+    <div class="section-title">📥 Input Data</div>
     <div class="section-info">Diisi setelah terima sore update dari sales</div>
   </div>
 
@@ -702,14 +702,14 @@ body {
 
     <!-- Lead measures -->
     <div class="input-group">
-      <div class="input-label">Inbound Leads Difilter</div>
-      <div class="input-hint">Target 30/hari (15 × 2 CS)</div>
+      <div class="input-label">MQL Terfilter</div>
+      <div class="input-hint">Target 4/hari (Total: 120)</div>
       <input class="field" type="number" id="iInbound" placeholder="0" value="0"/>
     </div>
 
     <div class="input-group">
       <div class="input-label">Outbound Responses</div>
-      <div class="input-hint">Target 32/hari (16 × 2 CS)</div>
+      <div class="input-hint">Target 10/hari (Total: 300)</div>
       <input class="field" type="number" id="iOutbound" placeholder="0" value="0"/>
     </div>
 
@@ -739,7 +739,7 @@ body {
 
     <div class="input-group">
       <div class="input-label">RO Outreach</div>
-      <div class="input-hint">Target 6/hari (3 × 2 CS)</div>
+      <div class="input-hint">Target 10/hari (Total: 300)</div>
       <input class="field" type="number" id="iRO" placeholder="0" value="0"/>
     </div>
 
@@ -764,13 +764,13 @@ const WIN_TARGET  = 500; // juta
 const SURV_TARGET = 300; // juta
 
 const LEAD_CFG = [
-  { id:'inbound',        name:'Inbound Leads Difilter',     target:30,  unit:'leads', color:'#60a5fa', pct:false, inputId:'iInbound' },
-  { id:'outbound',       name:'Outbound Responses',          target:32,  unit:'resp',  color:'#a78bfa', pct:false, inputId:'iOutbound' },
+  { id:'inbound',        name:'MQL Terfilter',     target:120,  unit:'leads', color:'#60a5fa', pct:false, inputId:'iInbound' },
+  { id:'outbound',       name:'Outbound Responses',          target:300,  unit:'resp',  color:'#a78bfa', pct:false, inputId:'iOutbound' },
   { id:'discovery',      name:'Discovery Meeting',           target:4,   unit:'meet',  color:'#34d399', pct:false, inputId:'iDiscovery' },
   { id:'quotation',      name:'Quotation Meeting',           target:6,   unit:'meet',  color:'#FF7A35', pct:false, inputId:'iQuotation' },
   { id:'followup',       name:'Follow-up Post-Quotation',   target:100, unit:'%',     color:'#f59e0b', pct:true,  inputId:'iFollowup' },
   { id:'closingAttempt', name:'Attempt Closing Aktif',       target:4,   unit:'att',   color:'#ff4d6d', pct:false, inputId:'iClosingAttempt' },
-  { id:'ro',             name:'RO Outreach',                 target:6,   unit:'cust',  color:'#22d17a', pct:false, inputId:'iRO' },
+  { id:'ro',             name:'RO Outreach',                 target:300,   unit:'cust',  color:'#22d17a', pct:false, inputId:'iRO' },
   { id:'invoice',        name:'Invoice Ditagih',             target:10,  unit:'inv',   color:'#fbbf24', pct:false, inputId:'iInvoice' },
 ];
 
